@@ -94,7 +94,25 @@
 
             psInsert.executeUpdate();
 
-            // redirect ke halaman pembelian
+             // ambil stok barang sekarang
+            String sqlGetStok = "SELECT SisaStok FROM stok WHERE Kd_Barang = ?";
+            PreparedStatement psGetStok = conn.prepareStatement(sqlGetStok);
+            psGetStok.setString(1, Kd_Barang);
+            ResultSet rsGetStok = psGetStok.executeQuery();
+            int stokSekarang = 0;
+            if (rsGetStok.next()) {
+                stokSekarang = rsGetStok.getInt("SisaStok");
+            }
+
+            // hitung stok baru
+            int stokBaru = stokSekarang - jumlahBeli;
+
+            // update stok barang
+            String sqlUpdateStok = "UPDATE stok SET SisaStok = ? WHERE Kd_Barang = ?";
+            PreparedStatement psUpdateStok = conn.prepareStatement(sqlUpdateStok);
+            psUpdateStok.setInt(1, stokBaru);
+            psUpdateStok.setString(2, Kd_Barang);
+            psUpdateStok.executeUpdate();
             %>
             <script>
                 alert("Data berhasil ditambahkan");

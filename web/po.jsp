@@ -456,10 +456,11 @@
         var selectedOption = selectedBarang.options[selectedBarang.selectedIndex];
         var selectedOption1 = selectedCustomer.options[selectedCustomer.selectedIndex];
         var KdPo = document.getElementById("KdPo").value;
-        var jumlahBeli = document.getElementById("jumlahBeli").value;
+        var sisaStok = parseInt(selectedOption.getAttribute("data-stok"));
+         var jumlahBeli = parseInt(document.getElementById("jumlahBeli").value);
 
         // Lakukan validasi untuk memastikan input valid
-        if (selectedBarang.value === "Nama_Barang" || selectedCustomer.value === "Nama" || KdPo === "" || jumlahBeli === "") {
+        if (selectedBarang.value === "Nama_Barang" || selectedCustomer.value === "Nama" || KdPo === "" ||  isNaN(jumlahBeli) || jumlahBeli <= 0) {
             alert("Pilih barang dan masukkan jumlah beli terlebih dahulu.");
             return;
         }
@@ -467,11 +468,18 @@
         // Ambil nama barang dan harga jual dari data yang tersimpan di dropdown
         var namaBarang = selectedOption.text;
         var harga = selectedOption.getAttribute("data-harga");
-        var sisaStok = selectedOption.getAttribute("data-stok");
+//        var sisaStok = selectedOption.getAttribute("data-stok");
         var namaCustomer = selectedOption1.text;
 
         // Hitung total bayaran
         var totalBayaran = harga * jumlahBeli;
+        
+        // Perbarui sisa stok
+        var newSisaStok = sisaStok - jumlahBeli;
+        
+        // Perbarui tampilan HTML yang menampilkan sisa stok
+        selectedOption.setAttribute("data-stok", newSisaStok);
+        selectedOption.text = namaBarang + " (Sisa Stok: " + newSisaStok + ")";
 
         // Tambahkan data barang ke dalam tabel
         var tableBody = document.getElementById("barangTableBody");
@@ -531,7 +539,7 @@
 
 //        cell1.innerHTML = NoNota;
         cell1.innerHTML = namaBarang;
-        cell2.innerHTML = sisaStok;
+        cell2.innerHTML = newSisaStok;
         cell3.innerHTML = "Rp " + harga + ",-";
         cell4.innerHTML = jumlahBeli;
         cell5.innerHTML = "Rp " + totalBayaran + ",-";
